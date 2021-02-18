@@ -43,5 +43,5 @@ export const LOG_LEVEL = env("LOG_LEVEL", "info");
  */
 export const MONGODB_CONNECTION = env(
   "MONGODB_CONNECTION",
-  `mongodb://mongo/todos-${NODE_ENV}`
+  `mongodb://localhost/todos-${NODE_ENV}`
 );
