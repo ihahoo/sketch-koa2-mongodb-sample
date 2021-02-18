@@ -1,0 +1,1000 @@
+{
+  "info": {
+    "_postman_id": "abd64cfd-8645-485e-b9ab-ad81b5a014a9",
+    "name": "todos-curd",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create a todo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "1265e69b-8071-4715-83c7-ba98b27a2c5c",
+            "exec": [
+              "var Ajv = require('ajv');",
+              "var ajv = new Ajv({ logger: console, coerceTypes: true, unknownFormats: [\"int32\"] });",
+              "",
+              "const res = {",
+              "  content: pm.response.json(),",
+              "  headers: pm.response.headers.reduce((c, k) => ({...c, [k.key]: k.value }), {})",
+              "}",
+              "",
+              "const schema = {\"type\":\"object\",\"required\":[],\"properties\":{\"content\":{\"allOf\":[{\"type\":\"object\",\"required\":[\"todo\"],\"properties\":{\"todo\":{\"type\":\"string\",\"description\":\"todo\"}}},{\"type\":\"object\",\"required\":[\"id\"],\"properties\":{\"id\":{\"type\":\"string\"}}}]}}};",
+              "",
+              "pm.test(\"Status code is 201\", function () {",
+              "  pm.response.to.have.status(201);",
+              "});",
+              "",
+              "pm.test(\"Json body schema test\", function(){",
+              "  pm.expect(ajv.validate(schema, data)).to.be.true;",
+              "})",
+              "",
+              "pm.test(\"result data test\", function(){",
+              "  pm.expect(res.content.todo).equal(pm.variables.get(\"todo\"));",
+              "  pm.expect(res.content.owner).equal(pm.variables.get(\"user\"));",
+              "})",
+              "",
+              "// 为后续测试准备数据",
+              "pm.environment.set(\"todoId\", res.content.id);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "795883c8-2bf0-443d-9fc5-f441e228b9b0",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"todo\": \"{{todo}}\"\n}",
+          "options": {
+            "raw": {}
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/todos",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos"]
+        }
+      },
+      "response": [
+        {
+          "id": "78861a2c-943b-4069-bd8b-5cde475a2bd0",
+          "name": "Response_201",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"todo\": \"{{todo}}\",\n \"owner\": \"{{user}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/todos",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos"]
+            }
+          },
+          "status": "The Todo created",
+          "code": 201,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "Find todo by id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "6481d2e3-fe3a-450e-b955-b4ad30104ae0",
+            "exec": [
+              "var Ajv = require('ajv');",
+              "var ajv = new Ajv({ logger: console, coerceTypes: true, unknownFormats: [\"int32\"] });",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const schema = {\"type\":\"object\",\"required\":[],\"properties\":{\"content\":{\"allOf\":[{\"type\":\"object\",\"required\":[\"todo\"],\"properties\":{\"todo\":{\"type\":\"string\",\"description\":\"todo\"}}},{\"type\":\"object\",\"required\":[\"id\"],\"properties\":{\"id\":{\"type\":\"string\"}}}]}}};",
+              "pm.test(\"Json body schema test\", function(){",
+              "  const res = {",
+              "    content: pm.response.json(),",
+              "    headers: pm.response.headers.reduce((c, k) => ({...c, [k.key]: k.value }), {})",
+              "  }",
+              "  pm.expect(ajv.validate(schema, data)).to.be.true;",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "f476457f-92d4-465c-8c7b-a526aa6f5be8",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/todos/:todoId",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos", ":todoId"],
+          "variable": [
+            {
+              "key": "todoId",
+              "value": "{{todoId}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "e2963b0b-00ee-4e06-aa76-0937ecc8172c",
+          "name": "Response_200",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/todos/:todoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos", ":todoId"],
+              "variable": [
+                {
+                  "key": "todoId",
+                  "value": "todoId"
+                }
+              ]
+            }
+          },
+          "status": "Expected response to a valid request",
+          "code": 200,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "Find todo by wrong id",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "a28c4380-a224-437f-8c18-a7b1026721d0",
+            "exec": [
+              "var Ajv = require('ajv');",
+              "var ajv = new Ajv({ logger: console, coerceTypes: true, unknownFormats: [\"int32\"] });",
+              "",
+              "pm.test(\"Status code is 404\", function () {",
+              "  pm.response.to.have.status(404);",
+              "});",
+              "",
+              "const schema = {",
+              "  type: \"object\",",
+              "  required: [\"name\"],",
+              "  properties: {",
+              "    name: {",
+              "      type: \"string\"",
+              "    },",
+              "    message: {",
+              "      type: \"string\"",
+              "    },",
+              "    code: {",
+              "      type: \"string\"",
+              "    },",
+              "    path: {",
+              "      type: \"string\"",
+              "    },",
+              "    value: {",
+              "      type: \"string\"",
+              "    },",
+              "    keyword: {",
+              "      type: \"string\"",
+              "    }",
+              "  }",
+              "}",
+              "",
+              "pm.test(\"err schema test\", function(){",
+              "  pm.expect(ajv.validate(schema, pm.response.json())).to.be.true;",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "9446f20f-705c-42c5-9916-ec180f09bbc8",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/todos/5ee6d60435d1603c47d0263b",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos", "5ee6d60435d1603c47d0263b"]
+        }
+      },
+      "response": [
+        {
+          "id": "4896e9c0-4cf2-4b49-9974-0a823248bbef",
+          "name": "Response_200",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/todos/:todoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos", ":todoId"],
+              "variable": [
+                {
+                  "key": "todoId",
+                  "value": "todoId"
+                }
+              ]
+            }
+          },
+          "status": "Expected response to a valid request",
+          "code": 200,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "Update todo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "95914efd-0005-47f7-a8a2-b863b45c1fab",
+            "exec": [
+              "var Ajv = require('ajv');",
+              "var ajv = new Ajv({ logger: console, coerceTypes: true, unknownFormats: [\"int32\"] });",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "const schema = {\"type\":\"object\",\"required\":[],\"properties\":{\"content\":{\"allOf\":[{\"type\":\"object\",\"required\":[\"todo\"],\"properties\":{\"todo\":{\"type\":\"string\",\"description\":\"todo\"}}},{\"type\":\"object\",\"required\":[\"id\"],\"properties\":{\"id\":{\"type\":\"string\"}}}]}}};",
+              "pm.test(\"Json body schema test\", function(){",
+              "  const res = {",
+              "    content: pm.response.json(),",
+              "    headers: pm.response.headers.reduce((c, k) => ({...c, [k.key]: k.value }), {})",
+              "  }",
+              "  pm.expect(ajv.validate(schema, data)).to.be.true;",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "3bbe3dc7-6e65-4fad-b92e-ddc5767b264a",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"todo\": \"{{todo}}\",\n \"status\": \"{{status}}\"\n}",
+          "options": {
+            "raw": {}
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/todos/:todoId",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos", ":todoId"],
+          "variable": [
+            {
+              "key": "todoId",
+              "value": "{{todoId}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "1851c86b-4cba-47b7-93f4-543d0b08c790",
+          "name": "Response_200",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"todo\": \"{{todo}}\",\n \"status\": \"{{status}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/todos/:todoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos", ":todoId"],
+              "variable": [
+                {
+                  "key": "todoId",
+                  "value": "todoId"
+                }
+              ]
+            }
+          },
+          "status": "The todo",
+          "code": 200,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "userX can't update todo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "2febf2d2-a739-4330-a73f-39ffc06dcfc4",
+            "exec": [
+              "pm.test(\"Status code is 403\", function () {",
+              "  pm.response.to.have.status(403);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "e35015bc-4707-48b3-b6f4-f7e681aeb634",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{tokenX}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"todo\": \"{{todo}}\",\n \"status\": \"{{status}}\"\n}",
+          "options": {
+            "raw": {}
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/todos/:todoId",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos", ":todoId"],
+          "variable": [
+            {
+              "key": "todoId",
+              "value": "{{todoId}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "c034c6e6-7195-4a2e-b20d-eff085019e01",
+          "name": "Response_200",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"todo\": \"{{todo}}\",\n \"status\": \"{{status}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/todos/:todoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos", ":todoId"],
+              "variable": [
+                {
+                  "key": "todoId",
+                  "value": "todoId"
+                }
+              ]
+            }
+          },
+          "status": "The todo",
+          "code": 200,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "Create another todo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "846bb8bf-0653-46d2-809a-d957577000cd",
+            "exec": [
+              "pm.test(\"Status code is 201\", function () {",
+              "  pm.response.to.have.status(201);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "b6d0ccdf-f959-4bf5-bfe0-f63b7ab60d76",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"todo\": \"{{todo}}\"\n}",
+          "options": {
+            "raw": {}
+          }
+        },
+        "url": {
+          "raw": "{{baseUrl}}/todos",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos"]
+        }
+      },
+      "response": [
+        {
+          "id": "61eae70a-ccf8-4a39-8ce6-9158a05f00b5",
+          "name": "Response_201",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"todo\": \"{{todo}}\",\n \"owner\": \"{{user}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/todos",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos"]
+            }
+          },
+          "status": "The todo created",
+          "code": 201,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    },
+    {
+      "name": "List all todos",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "61c94f53-40ee-43b5-a084-00c4609579c6",
+            "exec": [
+              "var Ajv = require('ajv');",
+              "var ajv = new Ajv({ logger: console, coerceTypes: true, unknownFormats: [\"int32\"] });",
+              "",
+              "var res = {",
+              "  content: pm.response.json(),",
+              "  headers: pm.response.headers.reduce((c, k) => ({...c, [k.key]: k.value }), {})",
+              "}",
+              "",
+              "const schema = {\"type\":\"object\",\"required\":[],\"properties\":{\"content\":{\"type\":\"array\",\"items\":{\"allOf\":[{\"type\":\"object\",\"required\":[\"todo\"],\"properties\":{\"todo\":{\"type\":\"string\",\"description\":\"todo\"},\"status\":{\"type\":\"string\",\"enum\":[\"open\",\"close\"]}}},{\"type\":\"object\",\"required\":[\"id\"],\"properties\":{\"id\":{\"type\":\"string\"}}}]}},\"headers\":{\"type\":\"object\",\"required\":[\"x-total-count\"],\"properties\":{\"x-total-count\":{\"type\":\"integer\"}}}}};",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"result count should right\", function () {",
+              "  pm.expect(res.content.length).to.equal(2);",
+              "  pm.expect(Number(res.headers[\"x-total-count\"])).to.be.above(1);",
+              "})",
+              "",
+              "pm.test(\"Json body schema test\", function(){",
+              "  pm.expect(ajv.validate(schema, res)).to.be.true;",
+              "})",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "6087d5be-7c29-4aaf-b5ed-348a093a33d9",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/todos",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos"]
+        }
+      },
+      "response": [
+        {
+          "id": "cdd12957-89a2-40cc-be9a-66dea787a5ed",
+          "name": "Response_200",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "{{host}}/todos",
+              "host": ["{{host}}"],
+              "path": ["todos"]
+            }
+          },
+          "status": "A paged array of todos",
+          "code": 200,
+          "_postman_previewlanguage": "Text",
+          "header": [
+            {
+              "key": "Content-type",
+              "value": "application/json"
+            },
+            {
+              "key": "x-total-count",
+              "value": "unset"
+            }
+          ],
+          "cookie": [],
+          "responseTime": null,
+          "body": "[\n  {\n    \"id\": 1,\n    \"todo\": \"aa\",\n    \"status\": \"close\"\n  },\n  {\n    \"id\": 2,\n    \"name\": \"bb\",\n    \"status\": \"open\"\n}\n ]\n"
+        }
+      ]
+    },
+    {
+      "name": "deleteTodo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "id": "5d8b8f1c-9d5a-4eca-9824-8d8ca8e212fb",
+            "exec": [
+              "var Ajv = require('ajv');",
+              "var ajv = new Ajv({ logger: console, coerceTypes: true, unknownFormats: [\"int32\"] });",
+              "",
+              "pm.test(\"Status code is 204\", function () {",
+              "  pm.response.to.have.status(204);",
+              "});",
+              "",
+              ""
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "_postman_id": "c4d46215-843c-42b9-bfe9-75af10e22d74",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "{{token}}",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/todos/:todoId",
+          "host": ["{{baseUrl}}"],
+          "path": ["todos", ":todoId"],
+          "variable": [
+            {
+              "key": "todoId",
+              "value": "{{todoId}}",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "id": "9ef00b52-93cf-4fe3-a8fa-604a75f2a6a3",
+          "name": "Response_204",
+          "originalRequest": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/todos/:todoId",
+              "host": ["{{baseUrl}}"],
+              "path": ["todos", ":todoId"],
+              "variable": [
+                {
+                  "key": "todoId",
+                  "value": "todoId"
+                }
+              ]
+            }
+          },
+          "status": "todo deleted",
+          "code": 204,
+          "_postman_previewlanguage": "Text",
+          "header": [],
+          "cookie": [],
+          "responseTime": null,
+          "body": null
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "id": "8c6cff73-b837-4f91-bfcf-52ea7d6872bd",
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "id": "09de23be-a766-4d39-adb4-05327763f9b4",
+        "type": "text/javascript",
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "id": "a4295301-28d7-44ab-9106-41ea66e0732f",
+      "key": "todo",
+      "value": "a todo",
+      "type": "string"
+    },
+    {
+      "id": "172eaac4-4eda-475b-a793-f30b6bcef7f6",
+      "key": "status",
+      "value": "close",
+      "type": "string"
+    },
+    {
+      "id": "45e1131b-a9b0-4954-a859-76ce95862fdc",
+      "key": "userX",
+      "value": "5cb9a4edc48ad400120d28a7",
+      "type": "string"
+    },
+    {
+      "id": "5ab8da0a-0224-40b0-bcde-6ea7a41b3b7c",
+      "key": "tokenX",
+      "value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWNiOWE0ZWRjNDhhZDQwMDEyMGQyOGE3IiwiZXhwIjoyNTU3MDM1MjU4LCJucyI6Ii9hZHZlbnR1cmVyIn0.Lzzxd4INuDl-cRLre6fNuaVC8i5ylKki3BvU3ehKmjgORfknuAlsBmLLV0QDrQG49hEmBpPyPRVXH7ksiuf_jyOsq5wRIksQpx58iK7qBIGCC6Fgeka4XUkLZ281r_JO8_07ShYyP3l5QOcyMVVZq0Q038_BZ-TPDt8yYtKFpbU",
+      "type": "string"
+    }
+  ]
+}
